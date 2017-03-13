@@ -4,15 +4,15 @@
 	<Task>
 		<Name label="List Data"/>
 		<Template uri="./ListData.ctm"/>
-
 	</Task>
+	
+	<Task>
 		<Name label="Example 3(The name Field is Required!)"/>
 		<Template uri="./Example 3 Task_Final.ctm"/>
-	<Task>
-
 	</Task>
+
+	<Task>
 		<Name label="Example 4(The name Field is Required!)"/>
 		<Template uri="./Example 4 Task_Final.ctm"/>
-	<Task>
 	</Task>
 </Tasks>
