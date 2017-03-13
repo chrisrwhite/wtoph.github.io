@@ -7,7 +7,7 @@
 	</Task>
 	
 	<Task>
-		<Name label="Example 3(The name Field is Required!)"/>
+		<Name label="Example 3"/>
 		<Template uri="./Example 3 Task_Final.ctm"/>
 	</Task>
 
