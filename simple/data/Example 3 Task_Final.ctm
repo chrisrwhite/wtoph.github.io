@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Task schemaVersion="4.0" runNLS="never">
+	<!-- Step 1: enter the registration information-->
+	<Registration>
+	    <Name>Car Analysis</Name>
+	    <Description>This is a blank task</Description>
+	    <GUID>726B2B12-4542-4200-96F4-960C645D767F</GUID>
+		<Procedures>TBD</Procedures>
+		<Version>3.4</Version>
+		<Links>
+		<Link href="http://support.sas.com/software/products/sasstudio/index.html#s1=2">SAS Studio Documentation</Link>
+		</Links>
+	</Registration>
+	<Metadata>
+		
+		<DataSources>
+			<DataSource name="inlibname"><!-- Step 2: Specifying the name for the input data source-->
+			<Roles> 
+				<!-- Step 3: Identify the variable that contains the values that you want to convert-->
+				<Role name="invarname"  type="C" minVars="1" maxVars="1">Select the "Type" variable</Role> 
+				<Role name="invarname2" type="C" minVars="1" maxVars="1">Select the "Make" variable</Role>
+			</Roles>
+			</DataSource>
+		</DataSources>
+
+		<Options>
+			<!-- Step 4: Create fields for the user interface-->
+			<Option name="dataTab" inputType="string">DATA</Option> <!-- Data tab, use this name again in UI element-->
+
+			<Option name="dataGroup" inputType="string">DATA</Option> <!-- Data heading-->
+			<Option name="rolesGroup" inputType="string">BODY TYPE</Option> <!-- Body Type heading-->			
+			<Option name="driveGroup" inputType="string">DRIVE</Option> <!-- Drive heading-->
+			<Option name="msrpGroup" inputType="string">PRICE</Option> <!-- Price heading-->
+			<Option name="makeGroup" inputType="string">MAKE</Option> <!-- Make heading-->			
+						
+			<!-- Distinct Value input -->
+			<Option name="labelDISTINCT" inputType="string">Select 1-2 Body Types Below.</Option>
+			<Option name="distinctEXAMPLE1" inputType="distinct" source="invarname">Body Type 1:</Option>
+			<Option name="distinctEXAMPLE2" inputType="distinct" source="invarname">Body Type 2:</Option>	
+			<Option name="anotherType" inputType="checkbox">Add another Type?</Option>
+			
+			<!-- Radio Style input -->
+		         <Option inputType="string" name="labelRADIO">Select the Type of Drive.</Option>
+			 <Option inputType="radio" name="radioButton1" variable="radioEXAMPLE"  >Front</Option>
+			 <Option inputType="radio" name="radioButton2" variable="radioEXAMPLE" >Rear</Option>
+			 <Option inputType="radio" name="radioButton3" variable="radioEXAMPLE" >All</Option>
+
+			<!-- Slider Scale input-->	
+			<Option name="labelSliderEXAMPLE2" inputType="string">Choose your price range:</Option>
+			<Option name="sliderEXAMPLE2" defaultValue="120000.00" inputType="slider" discreteValues="1" minValue="0" maxValue="200000" showButtons="false">$0 - 200,000</Option>
+			
+			
+			<!-- Distinct Value input -->
+			<Option name="selectMake" inputType="checkbox" defaultValue="0">Select a specific make?</Option>
+			<Option name="labelDISTINCT2" inputType="string">Makes:</Option>
+			<Option name="distinctEXAMPLE3" inputType="distinct" source="invarname2">Make:</Option>	
+		</Options>
+		
+	  </Metadata>
+	  <UI>
+	  <!-- Step 5: Specify how you want the the Options elements appear in the user interface-->
+		<Container option="dataTab"> <!-- Container enables you to add tabs to the UI-->
+			<Group option="dataGroup" open="true"> <!-- refers to the group specified in Options-->
+				<DataItem data="inlibname" /> <!-- DataItem creates a field for the input data source-->
+			</Group> 
+			<Group option="rolesGroup" open="true"> 
+				<RoleItem role="invarname" /> <!-- Creates a field for specifing a variable -->
+				<RoleItem role="invarname2" />
+				<OptionItem option="labelDISTINCT"/>
+				<OptionChoice option="distinctEXAMPLE1"/>
+				<OptionItem option="anotherType" /> 
+				<OptionChoice option="distinctEXAMPLE2"/>
+			</Group> 
+			
+			<Group option="driveGroup" open="true">
+				<OptionItem option="labelRADIO"/>
+				<OptionChoice option="radioButton1"/>
+				<OptionChoice option="radioButton2"/>
+				<OptionChoice option="radioButton3"/>
+			</Group> 
+			
+			<Group option="msrpGroup" open="true">
+				<OptionItem option="labelSliderEXAMPLE2"/>
+				<OptionItem option="sliderEXAMPLE2"/>
+			</Group>
+				<Group option="makeGroup" open="true"> 
+				<OptionItem option="selectMake" />
+				
+				<OptionChoice option="distinctEXAMPLE3"/>
+			</Group> 
+
+		</Container >
+
+	  </UI>
+	  <Dependencies> 
+		 <!-- Step 7: Create the Dependency-->
+		 <!--when you select the Numeric option (numericChoice) from the Informat drop down ($informatType), the Numeric Informat is displayed, the Date informat is hidden-->
+		 <Dependency condition="$anotherType == '1' ">
+		 	<Target action="show" conditionResult="true" option="distinctEXAMPLE2"/>
+		 	<Target action="hide" conditionResult="false" option="distinctEXAMPLE2"/>
+	 	 </Dependency>
+	 	  <Dependency condition="$selectMake == '1' ">
+	
+		 	<Target action="show" conditionResult="true" option="distinctEXAMPLE3"/>
+		 	<Target action="hide" conditionResult="false" option="distinctEXAMPLE3"/>
+	 	 </Dependency>
+
+	 </Dependencies>
+	 
+	<!-- Code Template describes the SAS or SQL code, replace macro variable with velocity variables denoted with an '$' and the begining of the name-->
+  	<!-- Step 6: Add the Apache Velocity Variables-->	 
+	 
+  	<CodeTemplate>
+		<![CDATA[
+		
+data carSelection;
+	set $inlibname;
+	MSRP_num = input(MSRP, dollar10.)*100;
+	if $selectMake = 1 then do;
+		if Make = "$distinctEXAMPLE3" then do;
+			if  MSRP_num <= $sliderEXAMPLE2 then do;
+				if Type = "$distinctEXAMPLE1" or Type = "$distinctEXAMPLE2" then do;
+					if "$radioEXAMPLE"= "radioButton1" then do;
+						if DriveTrain = "Front" then output;
+						end;
+					else if "$radioEXAMPLE"= "radioButton2" then do;
+						if DriveTrain = "Rear" then output;
+						end;
+					else if "$radioEXAMPLE"= "radioButton3" then do;
+						if DriveTrain = "All" then output;
+						end;
+					end;
+				end;
+			end;
+		end;
+	else do;
+		if  MSRP_num <= $sliderEXAMPLE2 then do;
+			if Type = "$distinctEXAMPLE1" or Type = "$distinctEXAMPLE2" then do;
+				if "$radioEXAMPLE"= "radioButton1" then do;
+					if DriveTrain = "Front" then output;
+					end;
+				else if "$radioEXAMPLE"= "radioButton2" then do;
+					if DriveTrain = "Rear" then output;
+					end;
+				else if "$radioEXAMPLE"= "radioButton3" then do;
+					if DriveTrain = "All" then output;
+					end;
+				end;
+			end;
+		end;	
+	drop MSRP_num;
+run;
+
+proc print data = carSelection;
+run;
+
+
+		]]>
+	</CodeTemplate>
+</Task>

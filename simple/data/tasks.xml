@@ -4,6 +4,8 @@
 	<Task>
 		<Name label="List Data"/>
 		<Template uri="./ListData.ctm"/>
+		<Template uri="./Example 3 Task_Final.ctm"/>
+		<Template uri="./Example 4 Task_Final.ctm"/>
 	</Task>
 
 </Tasks>

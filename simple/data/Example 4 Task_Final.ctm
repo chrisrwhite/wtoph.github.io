@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Task schemaVersion="4.0" runNLS="never">
+	<Registration>
+		<!-- Step 1: enter the registration information-->
+	    <Name>Dataset Merging Task</Name>
+	    <Description>This task merges 2 datasets by a common variable</Description>
+	    <GUID>726B2B12-4542-4200-96F4-960C645D767F</GUID>
+		<Procedures>TBD</Procedures>
+		<Version>3.4</Version>
+		<Links>
+		<Link href="http://support.sas.com/software/products/sasstudio/index.html#s1=2">SAS Studio Documentation</Link>
+		</Links>
+	</Registration>
+	<Metadata>
+		
+		<DataSources>
+			<!-- Step 2: Specifying the name for the input data source-->
+			<DataSource name="inlibname1">
+			<Roles> 
+				<Role name="invarname1" type="A" minVars="1" maxVars="1">Character variable to convert</Role> 
+			</Roles>
+			</DataSource>
+			<DataSource name="inlibname2">
+			<Roles> 
+				<Role name="invarname2" type="A" minVars="1" maxVars="1">Character variable to convert</Role> 
+			</Roles>
+			</DataSource>
+				
+		</DataSources>
+
+		<Options>
+			<!-- Step 3: Create fields for the user interface-->
+			<Option name="dataTab" inputType="string">DATA</Option> <!-- Data tab, use this name again in UI element-->
+
+			<Option name="dataGroup" inputType="string">DATA</Option> <!-- Data heading-->
+			<Option name="rolesGroup" inputType="string">ROLES</Option> <!-- Roles heading-->
+		</Options>
+		
+	  </Metadata>
+	  <UI>
+		<!-- Step 4: Specify how you want the the Options elements appear in the user interface-->
+		<Container option="dataTab"> <!-- Container enables you to add tabs to the UI-->
+			<Group option="dataGroup" open="true"> <!-- refers to the datagroup specified in Options-->
+				<DataItem data="inlibname1" /> <!-- DataItem creates a field for the input data source-->
+				<DataItem data="inlibname2" />
+			</Group> 
+			<Group option="rolesGroup">
+				<RoleItem role="invarname1"/>
+			</Group>
+		</Container>
+	  </UI>
+	
+  	<CodeTemplate>
+		<![CDATA[
+		
+#set($charvar=$invarname1.get(0)) 
+
+data work.output;
+   merge $inlibname1 $inlibname2;
+   by $charvar;
+run;
+
+*title "Data set 1";
+proc print data=$inlibname1;
+title;
+
+*title "Data set 2";
+proc print data=$inlibname2;
+title;
+
+*title "Data set 1 and 2 merged";
+proc print data=work.output;
+title;
+run;
+
+		]]>
+	</CodeTemplate>
+</Task>
