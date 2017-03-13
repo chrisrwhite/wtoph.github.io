@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Repository label="This is a Test Repository" version="1.0">
+
+	<Tasks>
+		<Category label="Example Saved Tasks">
+			<Location uri="./data/tasks.xml"/>
+		</Category>
+	</Tasks>
+
+</Repository>
